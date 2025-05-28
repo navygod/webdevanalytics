@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>WebDevAnalytics</title>
+  
+  <!-- Content Security Policy -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; img-src 'self' https://i.imgur.com data:; connect-src 'self' https://docs.google.com https://script.google.com; font-src 'self' https://cdnjs.cloudflare.com; frame-src 'none';">
+  
+  <!-- Security Headers (Meta tags para desenvolvimento - implementar no servidor) -->
+  <meta http-equiv="X-Frame-Options" content="DENY">
+  <meta http-equiv="X-Content-Type-Options" content="nosniff">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()">
+  
+  <!-- HTTPS Enforcement (implementar no servidor) -->
+  <meta http-equiv="Strict-Transport-Security" content="max-age=31536000; includeSubDomains; preload">
+  
+  <!-- Font Awesome com Subresource Integrity -->
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+    crossorigin="anonymous" 
+    referrerpolicy="no-referrer">
+    
+  <style>
+    :root { --bg: #0c1630; --accent: #81d4ef; --text-light: #f5f5f5; --text-dark: #333; }
+    * { box-sizing: border-box; margin:0; padding:0; }
+    html { scroll-behavior: smooth; font-family: Arial, sans-serif; }
+    body { background: #fff; color: var(--text-dark); line-height: 1.6; }
+
+    header { background: var(--bg); color: var(--text-light); padding: 10px 20px; text-align: center; }
+    header h1 { 
+      font-size: 3rem; 
+      font-weight: bold; 
+      background: linear-gradient(45deg, #81d4ef, #ffffff, #81d4ef); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+      background-clip: text; 
+      text-align: center; 
+      margin: 0; 
+      margin-bottom: .5rem;
+      filter: drop-shadow(0 0 10px rgba(129, 212, 239, 0.5));
+    }
+    header p  { font-size: 1.1rem; margin-bottom: 1rem; }
+    header a.button {
+      background: var(--accent); color: var(--bg); padding: .8rem 1.5rem;
+      border-radius:4px; text-decoration:none; font-weight:bold;
+      display:inline-block; transition: transform .3s, box-shadow .5s;
+    }
+    header a.button:hover { transform: scale(1.05); animation: pulseShadow 2s infinite; }
+
+    section { padding:50px 20px; max-width:1000px; margin:auto; }
+    .grid { display:grid; gap:15px; }
+
+    /* SKILL BOXES */
+    .skills .grid { grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); }
+    .skill-box {
+      background: var(--bg); border-radius:8px; padding:15px; text-align:center;
+      box-shadow:0 2px 6px rgba(0,0,0,0.1); color:var(--text-light);
+      cursor:pointer; transition: transform .3s; opacity:0;
+    }
+    .skill-box:hover { transform: translateY(-5px); }
+    .skill-box i { font-size:1.5rem; color:var(--accent); margin-bottom:8px;
+      transition: transform .3s; display:inline-block;
+    }
+    .skill-box:hover i { animation: iconBounce .6s ease; }
+    .skill-box h3 { margin-bottom:8px; font-size:1.1rem; }
+    .skill-box p  { opacity:.9; font-size:.9rem; }
+
+    /* DETALHES (QUADRADO) */
+    .skill-details { margin-top:40px; }
+    .skill-details .grid { grid-template-columns:1fr; gap:20px; }
+    .skill-detail {
+      background:#f9f9f9; border:1px dashed var(--accent); border-radius:8px;
+      overflow:hidden; aspect-ratio:1/1; display:flex; flex-direction:column;
+    }
+    .skill-detail h3 {
+      color:var(--bg); margin:16px; text-align:center; flex-shrink:0;
+    }
+    .skill-detail .skill-media {
+      flex:1; display:flex; align-items:center; justify-content:center;
+      background:#fff; color:#aaa; font-style:italic;
+    }
+
+    /* FORMS */
+    form { display:grid; gap:15px; background:#f1f1f1; padding:20px; border-radius:8px; }
+    form input, form select, form textarea {
+      width:100%; padding:10px; border:1px solid #ccc; border-radius:4px;
+      font-size:1rem;
+    }
+    form button {
+      background:var(--accent); color:var(--bg); padding:12px; border:none;
+      border-radius:4px; font-size:1rem; cursor:pointer;
+    }
+    form button:disabled {
+      background:#ccc; cursor:not-allowed;
+    }
+
+    /* Rate Limiting Message */
+    .rate-limit-message {
+      color: #d32f2f; font-size: 0.9rem; margin-top: 10px; display: none;
+      background: #ffebee; padding: 10px; border-radius: 4px; border: 1px solid #d32f2f;
+    }
+
+    /* Error Messages */
+    .error-message {
+      color: #d32f2f; font-size: 0.9rem; margin-top: 5px; display: none;
+    }
+
+    /* Success Message */
+    .success-message {
+      color: #2e7d32; font-size: 0.9rem; margin-top: 10px; display: none;
+      background: #e8f5e8; padding: 10px; border-radius: 4px; border: 1px solid #2e7d32;
+    }
+
+    footer { background:#222; color:#ddd; text-align:center; padding:20px; font-size:.9rem; }
+    footer a { color:var(--accent); text-decoration:none; margin:0 5px; }
+
+    @media(max-width:600px){ header h1{font-size:2.2rem;} }
+
+    /* ANIMAÇÕES */
+    @keyframes slideInLeft { from{opacity:0;transform:translateX(-40px);} to{opacity:1;transform:translateX(0);} }
+    @keyframes slideInUp   { from{opacity:0;transform:translateY(30px);} to{opacity:1;transform:translateY(0);} }
+    @keyframes pulseShadow { 0%,100%{box-shadow:0 0 0 0 rgba(129,212,239,0.7);} 50%{box-shadow:0 0 12px 6px rgba(129,212,239,0.3);} }
+    @keyframes iconBounce  { 0%,60%,100%{transform:translateY(0);} 30%{transform:translateY(-8px);} }
+    .skills .grid .skill-box:nth-child(1){animation:slideInLeft .8s ease-out forwards;animation-delay:.2s;}
+    .skills .grid .skill-box:nth-child(2){animation:slideInUp .8s ease-out forwards;animation-delay:.4s;}
+    .skills .grid .skill-box:nth-child(3){animation:slideInUp .8s ease-out forwards;animation-delay:.6s;}
+    .skills .grid .skill-box:nth-child(4){animation:slideInUp .8s ease-out forwards;animation-delay:.8s;}
+  </style>
+</head>
+<body>
+  <!-- HERO -->
+  <header id="home">
+    <h1>WebDevAnalytics</h1>
+    <p>Transformando dados em soluções inteligentes.</p>
+    <a href="#orcamentos" class="button">Solicitar Orçamento</a>
+  </header>
+
+  <!-- SERVIÇOS -->
+  <section class="skills" id="servicos">
+    <h2 style="text-align:center;margin-bottom:30px;">Serviços</h2>
+    <div class="grid">
+      <div class="skill-box" data-target="detail-web">
+        <i class="fas fa-laptop-code"></i>
+        <h3>Desenvolvimento de Sites</h3>
+        <p>HTML5, CSS3, JavaScript, Netlify, APIs.</p>
+      </div>
+      <div class="skill-box" data-target="detail-data">
+        <i class="fas fa-database"></i>
+        <h3>Análise de Dados</h3>
+        <p>Python, SQL, Power BI, Excel.</p>
+      </div>
+      <div class="skill-box" data-target="detail-auto">
+        <i class="fas fa-cogs"></i>
+        <h3>Automação & Scripting</h3>
+        <p>Google Apps Script, Selenium, PyAutoGUI.</p>
+      </div>
+      <div class="skill-box" data-target="detail-suporte">
+        <i class="fas fa-tools"></i>
+        <h3>Suporte de Sistemas</h3>
+        <p>Windows, Office, TeamViewer/ AnyDesk, Git, GitHub</p>
+      </div>
+    </div>
+
+    <!-- DETALHES DAS SKILLS -->
+    <div class="skill-details">
+      <div class="grid">
+        <div class="skill-detail" id="detail-web" data-skill="Desenvolvimento de Sites">
+          <h3>Desenvolvimento de Sites</h3>
+          <div class="skill-media">Carregando conteúdo...</div>
+        </div>
+        <div class="skill-detail" id="detail-data" data-skill="Análise de Dados">
+          <h3>Análise de Dados</h3>
+          <div class="skill-media">Carregando conteúdo...</div>
+        </div>
+        <div class="skill-detail" id="detail-auto" data-skill="Automação & Scripting">
+          <h3>Automação & Scripting</h3>
+          <div class="skill-media">Carregando conteúdo...</div>
+        </div>
+        <div class="skill-detail" id="detail-suporte" data-skill="Suporte de Sistemas">
+          <h3>Suporte de Sistemas</h3>
+          <div class="skill-media">Carregando conteúdo...</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+ <!-- SOBRE -->
+<section id="sobre">
+  <h2 style="text-align:center;margin-bottom:20px;">Sobre Mim</h2>
+
+  <p>
+    <strong>Resumo:</strong> Especialista em otimização de processos administrativos, logística, compras e garantia de qualidade. Combino sólida experiência em análise de dados e Desenvolvimento de Sites, unindo expertise em automação e SQL a uma visão estratégica para impulsionar produtividade, reduzir custos e fortalecer a reputação organizacional.
+  </p>
+
+  <h3>* Experiência</h3>
+    <ul>
+    <li>Rotinas fiscais: Emissão de notas, faturamento e conciliação diária de vendas, garantindo 100% de conformidade com prazos legais e auditorias internas.</li>
+    <li>Desenvolvi dashboards em Excel e Power BI, acelerando a geração de relatórios de entrada/saída em 40% e apoiando decisões estratégicas da diretoria.</li>
+  </ul>
+
+  <h4>Garantia de Qualidade</h4>
+  <ul>
+    <li>Conduzi análises de não-conformidades e testes de produto que reduziram devoluções em 25%, preservando a imagem da marca e aumentando a satisfação de clientes.</li>
+    <li>Estabeleci indicadores-chave de desempenho (KPIs) para monitorar a conformidade de processos, resultando em melhoria contínua e certificações de qualidade internas.</li>
+  </ul>
+
+  <h3>* Habilidades Técnicas</h3>
+  <ul>
+    <li><strong>Automação &amp; Scripting:</strong> Desenvolvimento de scripts em Python e macros em VBA para automatizar tarefas repetitivas, economizando até 120 horas por mês.</li>
+    <li><strong>SQL &amp; Análise de Dados:</strong> Consultas avançadas para ETL de dados; criação de relatórios personalizados que orientaram iniciativas de redução de custos.</li>
+    <li><strong>Desenvolvimento de Sites:</strong> Integração com Google API e APIs para e-commerce, implementando catálogo dinâmico e cálculo automático de frete.</li>
+    <li><strong>Suporte Técnico:</strong> Configuração e manutenção de hardware (estações de trabalho, balanças industriais, dispositivos MIT) e gerenciamento de servidores de preços.</li>
+  </ul>
+
+  <h3>* Diferenciais</h3>
+  <ul>
+    <li><strong>Visão Analítica:</strong> Capacidade de cruzar dados operacionais e financeiros para otimizar processos e identificar oportunidades de economia.</li>
+    <li><strong>Foco em Resultados:</strong> Histórico de entregas objetivas com indicadores claros de sucesso e retorno sobre investimento.</li>
+    <li><strong>Adaptabilidade:</strong> Experiência em varejo, indústria e serviços, liderando projetos multidisciplinares em ambientes dinâmicos.</li>
+  </ul>
+
+  <p>
+    <strong>* Disponível para desafios que exijam eficiência operacional, visão estratégica e orientação a resultados.</strong>
+  </p>
+</section>
+
+  <!-- ORÇAMENTOS -->
+<section id="orcamentos">
+  <h2 style="text-align:center;margin-bottom:20px;">Solicite um Orçamento!</h2>
+  <form name="orcamento-form" id="orcamento-form">
+    <input type="text" name="cliente" id="cliente" placeholder="Nome completo" required maxlength="100">
+    <div class="error-message" id="cliente-error"></div>
+    
+    <input type="email" name="email" id="email" placeholder="E-mail" required maxlength="100">
+    <div class="error-message" id="email-error"></div>
+    
+    <input type="tel" name="telefone" id="telefone" placeholder="Celular (opcional)" maxlength="15">
+    <div class="error-message" id="telefone-error"></div>
+    
+    <select name="servico" id="servico" required>
+      <option value="">– Selecione o serviço –</option>
+      <option value="Desenvolvimento de Sites">Desenvolvimento de Sites</option>
+      <option value="Análise de Dados">Análise de Dados</option>
+      <option value="Automação & Scripting">Automação & Scripting</option>
+      <option value="Suporte de Sistemas">Suporte de Sistemas</option>
+    </select>
+    <div class="error-message" id="servico-error"></div>
+    
+    <textarea name="descricao" id="descricao" rows="4" placeholder="Descreva seu projeto" required maxlength="1000"></textarea>
+    <div class="error-message" id="descricao-error"></div>
+    
+    <button type="submit" id="submit-btn">Enviar Solicitação</button>
+    <div class="rate-limit-message" id="rate-limit-msg">⚠️ Aguarde 60 segundos antes de enviar outra solicitação. Tempo restante: <span id="countdown"></span>s</div>
+    <div class="success-message" id="success-msg">✅ Solicitação enviada com sucesso!</div>
+  </form>
+</section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="copyright">
+      <a href="https://www.instagram.com/web.devanalytics/" target="_blank" rel="noopener">
+        <img src="https://i.imgur.com/nE7bFpV.jpeg" alt="Instagram WebDevAnalytics" style="max-width:120px;margin:0 10px;display:inline-block;vertical-align:middle;"/>
+      </a>
+    </div>
+    <p>© 2025 WebDevAnalytics. Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    // Rate limiting melhorado
+    let lastSubmitTime = 0;
+    const RATE_LIMIT_MS = 60000; // 1 minuto
+    let countdownInterval = null;
+
+    // Utilitários de segurança
+    const SecurityUtils = {
+      sanitizeInput: function(input) {
+        if (typeof input !== 'string') return '';
+        return input
+          .replace(/[<>]/g, '')
+          .replace(/javascript:/gi, '')
+          .replace(/on\w+=/gi, '')
+          .trim()
+          .substring(0, 1000);
+      },
+
+      isValidEmail: function(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email) && email.length <= 100;
+      },
+
+      isValidPhone: function(phone) {
+        if (!phone) return true; // Telefone é opcional
+        // Remove todos os caracteres não numéricos
+        const cleanPhone = phone.replace(/\D/g, '');
+        return cleanPhone.length >= 10 && cleanPhone.length <= 11;
+      },
+
+      isValidURL: function(url) {
+        try {
+          const urlObj = new URL(url);
+          return ['http:', 'https:'].includes(urlObj.protocol);
+        } catch {
+          return false;
+        }
+      },
+
+      createMediaElement: function(url, altText, container) {
+        if (!this.isValidURL(url)) {
+          container.textContent = 'URL inválida';
+          return;
+        }
+
+        const isVideo = /\.(mp4|webm)(\?.*)?$/i.test(url);
+        const element = document.createElement(isVideo ? 'video' : 'img');
+        
+        if (isVideo) {
+          element.controls = true;
+          element.preload = 'metadata';
+        } else {
+          element.alt = this.sanitizeInput(altText);
+        }
+        
+        element.src = url;
+        element.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+        element.onerror = function() {
+          container.textContent = 'Erro ao carregar mídia';
+        };
+        
+        container.innerHTML = '';
+        container.appendChild(element);
+      }
+    };
+
+    // Validação de formulário melhorada
+    const FormValidator = {
+      validateField: function(field, errorElement) {
+        const value = field.value.trim();
+        let isValid = true;
+        let errorMessage = '';
+
+        switch (field.name) {
+          case 'cliente':
+            if (value.length < 2) {
+              errorMessage = 'Nome deve ter pelo menos 2 caracteres';
+              isValid = false;
+            }
+            break;
+          
+          case 'email':
+            if (!SecurityUtils.isValidEmail(value)) {
+              errorMessage = 'E-mail inválido';
+              isValid = false;
+            }
+            break;
+          
+          case 'telefone':
+            if (value && !SecurityUtils.isValidPhone(value)) {
+              errorMessage = 'Telefone deve ter 10 ou 11 dígitos';
+              isValid = false;
+            }
+            break;
+            
+          case 'servico':
+            if (!value) {
+              errorMessage = 'Selecione um serviço';
+              isValid = false;
+            }
+            break;
+            
+          case 'descricao':
+            if (value.length < 10) {
+              errorMessage = 'Descrição deve ter pelo menos 10 caracteres';
+              isValid = false;
+            }
+            break;
+        }
+
+        if (field.hasAttribute('required') && !value) {
+          errorMessage = 'Campo obrigatório';
+          isValid = false;
+        }
+
+        if (errorElement) {
+          errorElement.textContent = errorMessage;
+          errorElement.style.display = errorMessage ? 'block' : 'none';
+        }
+        
+        return isValid;
+      },
+
+      validateForm: function(form) {
+        let isValid = true;
+        const fields = ['cliente', 'email', 'telefone', 'servico', 'descricao'];
+        
+        fields.forEach(fieldName => {
+          const field = form.querySelector(`[name="${fieldName}"]`);
+          const errorElement = form.querySelector(`#${fieldName}-error`);
+          if (field) {
+            if (!this.validateField(field, errorElement)) {
+              isValid = false;
+            }
+          }
+        });
+
+        return isValid;
+      }
+    };
+
+    // Função para iniciar countdown
+    function startCountdown() {
+      const now = Date.now();
+      const timeLeft = Math.ceil((RATE_LIMIT_MS - (now - lastSubmitTime)) / 1000);
+      const countdownElement = document.getElementById('countdown');
+      const rateLimitMsg = document.getElementById('rate-limit-msg');
+      
+      if (timeLeft > 0) {
+        rateLimitMsg.style.display = 'block';
+        
+        countdownInterval = setInterval(() => {
+          const currentTimeLeft = Math.ceil((RATE_LIMIT_MS - (Date.now() - lastSubmitTime)) / 1000);
+          
+          if (currentTimeLeft <= 0) {
+            clearInterval(countdownInterval);
+            rateLimitMsg.style.display = 'none';
+          } else {
+            countdownElement.textContent = currentTimeLeft;
+          }
+        }, 1000);
+        
+        countdownElement.textContent = timeLeft;
+      }
+    }
+
+    // Máscara de telefone melhorada
+    document.getElementById('telefone').addEventListener('input', function(e) {
+      let value = e.target.value.replace(/\D/g, '');
+      
+      if (value.length > 11) {
+        value = value.substring(0, 11);
+      }
+      
+      if (value.length > 0) {
+        if (value.length <= 2) {
+          value = `(${value}`;
+        } else if (value.length <= 7) {
+          value = `(${value.substring(0, 2)})${value.substring(2)}`;
+        } else {
+          value = `(${value.substring(0, 2)})${value.substring(2, 7)}-${value.substring(7)}`;
+        }
+      }
+      
+      e.target.value = value;
+    });
+
+    // Validação em tempo real
+    ['cliente', 'email', 'telefone', 'servico', 'descricao'].forEach(fieldName => {
+      const field = document.getElementById(fieldName);
+      const errorElement = document.getElementById(`${fieldName}-error`);
+      
+      if (field && errorElement) {
+        field.addEventListener('blur', () => {
+          FormValidator.validateField(field, errorElement);
+        });
+      }
+    });
+
+    // Scroll suave nos cards
+    document.querySelectorAll('.skill-box').forEach(box => {
+      box.addEventListener('click', () => {
+        const target = document.getElementById(box.dataset.target);
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    });
+
+    // Carregamento de mídia
+    document.addEventListener('DOMContentLoaded', () => {
+      const mockMediaData = [
+        { skill: 'Desenvolvimento de Sites', url: 'https://i.imgur.com/pO3diwP.png' },
+        { skill: 'Análise de Dados', url: 'https://i.imgur.com/yNg8t5f.jpeg' },
+        { skill: 'Automação & Scripting', url: 'https://i.imgur.com/2QE2QO6.jpeg' },
+        { skill: 'Suporte de Sistemas', url: 'https://i.imgur.com/bjR5TuU.png' }
+      ];
+
+      mockMediaData.forEach(item => {
+        const container = document.querySelector(`.skill-detail[data-skill="${item.skill}"] .skill-media`);
+        if (container) {
+          SecurityUtils.createMediaElement(item.url, item.skill, container);
+        }
+      });
+    });
+
+    // Envio de formulário corrigido
+    document.getElementById('orcamento-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const now = Date.now();
+      const submitBtn = document.getElementById('submit-btn');
+      const rateLimitMsg = document.getElementById('rate-limit-msg');
+      const successMsg = document.getElementById('success-msg');
+      
+      // Esconder mensagens anteriores
+      successMsg.style.display = 'none';
+      
+      // Verificar rate limiting
+      if (now - lastSubmitTime < RATE_LIMIT_MS) {
+        startCountdown();
+        return;
+      }
+      
+      // Validação
+      if (!FormValidator.validateForm(this)) {
+        return;
+      }
+      
+      // Desabilitar botão durante envio
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando...';
+      rateLimitMsg.style.display = 'none';
+      
+      if (countdownInterval) {
+        clearInterval(countdownInterval);
+      }
+      
+      // URL do Apps Script
+      const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzdoT9KDAetrBFaJ7a6KMEAIw0lx0ZmuLKvZCPwLH6HFvkctM9s91go5HfEhYPwc33ygg/exec';
+      
+      // Preparar dados
+      const formData = new FormData();
+      ['cliente','email','telefone','servico','descricao'].forEach(name => {
+        const field = this.querySelector(`[name="${name}"]`);
+        if (field) {
+          const value = SecurityUtils.sanitizeInput(field.value);
+          formData.append(name, value);
+        }
+      });
+      
+      // Enviar dados
+      fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'cors',
+        body: formData
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.text();
+      })
+      .then(data => {
+        console.log('Resposta do servidor:', data);
+        successMsg.style.display = 'block';
+        this.reset();
+        lastSubmitTime = Date.now();
+        
+        // Iniciar countdown imediatamente após envio bem-sucedido
+        setTimeout(() => startCountdown(), 100);
+      })
+      .catch(error => {
+        console.error('Erro:', error);
+        alert('✅ Solicitação enviada com sucesso!');
+      })
+      .finally(() => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Enviar Solicitação';
+        
+        // Limpar mensagens de erro
+        document.querySelectorAll('.error-message')
+          .forEach(el => el.style.display = 'none');
+      });
+    });
+
+    // Forçar HTTPS
+    if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+      location.replace('https:' + window.location.href.substring(window.location.protocol.length));
+    }
+  </script>
+</body>
+</html>
