@@ -51,6 +51,99 @@
     }
     header a.button:hover { transform: scale(1.05); animation: pulseShadow 2s infinite; }
 
+    /* BOTÕES DO HEADER - VERSÃO CORRIGIDA */
+.header-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.cta-button {
+  background: var(--accent); 
+  color: var(--bg); 
+  padding: .8rem 1.5rem;
+  border-radius: 4px; 
+  text-decoration: none; 
+  font-weight: bold;
+  transition: transform .3s, box-shadow .5s;
+}
+.cta-button:hover { 
+  transform: scale(1.05); 
+  box-shadow: 0 0 12px 6px rgba(129,212,239,0.3);
+}
+
+/* CORREÇÃO PRINCIPAL: Centralizar os botões sociais */
+.social-buttons {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  justify-content: center; /* Adicionar esta linha */
+  width: 100%; /* Adicionar esta linha para ocupar toda a largura */
+}
+
+    .social-btn {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform .3s, box-shadow .3s;
+      text-decoration: none;
+      overflow: hidden;
+      border: 2px solid transparent;
+    }
+
+    .social-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+
+    .social-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    /* Cores específicas para hover */
+    .social-btn.github {
+      background: #333;
+      border-color: #333;
+    }
+    .social-btn.github:hover {
+      box-shadow: 0 8px 20px rgba(51,51,51,0.4);
+    }
+
+    .social-btn.linkedin {
+      background: #0077b5;
+      border-color: #0077b5;
+    }
+    .social-btn.linkedin:hover {
+      box-shadow: 0 8px 20px rgba(0,119,181,0.4);
+    }
+
+    .social-btn.instagram {
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+      border-color: #e6683c;
+    }
+    .social-btn.instagram:hover {
+      box-shadow: 0 8px 20px rgba(188,24,136,0.4);
+    }
+
+    /* Animações */
+    @keyframes socialPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .social-btn:active {
+      animation: socialPulse 0.3s ease;
+    }
+
     section { padding:50px 20px; max-width:1000px; margin:auto; }
     .grid { display:grid; gap:15px; }
 
@@ -137,6 +230,21 @@
     <h1>WebDevAnalytics</h1>
     <p>Transformando dados em soluções inteligentes.</p>
     <a href="#orcamentos" class="button">Solicitar Orçamento</a>
+    <br>
+    
+    <br>
+    <div class="social-buttons">
+        <a href="https://github.com/navygod" target="_blank" rel="noopener noreferrer" class="social-btn github" title="GitHub">
+          <img src="https://i.imgur.com/PmuA4yM.png" alt="GitHub">
+        </a>
+        <a href="https://www.linkedin.com/in/tiago-correa-b026391b7/" target="_blank" rel="noopener noreferrer" class="social-btn linkedin" title="LinkedIn">
+          <img src="https://i.imgur.com/ojKjPft.png" alt="LinkedIn">
+        </a>
+        <a href="https://www.instagram.com/web.devanalytics/" target="_blank" rel="noopener noreferrer" class="social-btn instagram" title="Instagram">
+          <img src="https://i.imgur.com/hcaMlqY.jpeg" alt="Instagram">
+        </a>
+      </div>
+    </div>
   </header>
 
   <!-- SERVIÇOS -->
