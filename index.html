@@ -25,6 +25,29 @@
     referrerpolicy="no-referrer">
     
   <style>
+
+/* Theme switch container */
+.theme-switch-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  margin-bottom: 0;   /* remove margem de baixo */
+  z-index: 1000;       /* garante que fique acima dos outros elementos */
+}
+.theme-button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background 0.3s, color 0.3s;
+}
+.theme-button.active {
+  background: var(--accent);
+  color: var(--bg) !important;
+}
+
     :root { --bg: #0c1630; --accent: #81d4ef; --text-light: #f5f5f5; --text-dark: #333; }
     * { box-sizing: border-box; margin:0; padding:0; }
     html { scroll-behavior: smooth; font-family: Arial, sans-serif; }
@@ -222,6 +245,36 @@
     .skills .grid .skill-box:nth-child(2){animation:slideInUp .8s ease-out forwards;animation-delay:.4s;}
     .skills .grid .skill-box:nth-child(3){animation:slideInUp .8s ease-out forwards;animation-delay:.6s;}
     .skills .grid .skill-box:nth-child(4){animation:slideInUp .8s ease-out forwards;animation-delay:.8s;}
+
+    /* Área de tema */
+.tema-claro {
+      background: #fff !important;
+      color: #222 !important;
+    }
+    .tema-escuro {
+      background: #000000 !important;
+      color: #f1f1f1 !important;
+    }
+    .tema-alto-contraste {
+      background: #000 !important;
+      color: #ff0 !important;
+      border: 2px solid #fff !important;
+    }
+    #area-tema {
+      transition: background 0.3s, color 0.3s;
+      min-height: 100vh; /* Garante que o fundo cubra toda a área */
+    }
+  </style>
+
+  <style>
+    .theme-button {
+      border: none;
+      background: none;
+      cursor: pointer;
+      font-size: 1.5rem;
+      margin-left: 10px;
+      color: inherit;
+    }
   </style>
 </head>
 <body>
@@ -249,135 +302,169 @@
     </div>
   </header>
 
-  <!-- SERVIÇOS -->
-  <section class="skills" id="servicos">
-    <h2 style="text-align:center;margin-bottom:30px;">Serviços</h2>
-    <div class="grid">
-      <div class="skill-box" data-target="detail-web">
-        <i class="fas fa-laptop-code"></i>
-        <h3>Desenvolvimento de Sites</h3>
-        <p>HTML5, CSS3, JavaScript, Netlify, APIs.</p>
-      </div>
-      <div class="skill-box" data-target="detail-data">
-        <i class="fas fa-database"></i>
-        <h3>Análise de Dados</h3>
-        <p>Python, SQL, Power BI, Excel.</p>
-      </div>
-      <div class="skill-box" data-target="detail-auto">
-        <i class="fas fa-cogs"></i>
-        <h3>Automação & Scripting</h3>
-        <p>Google Apps Script, Selenium, PyAutoGUI.</p>
-      </div>
-      <div class="skill-box" data-target="detail-suporte">
-        <i class="fas fa-tools"></i>
-        <h3>Suporte de Sistemas</h3>
-        <p>Windows, Office, TeamViewer/ AnyDesk, Git, GitHub</p>
-      </div>
+  <!-- INÍCIO DA ÁREA QUE DEVE MUDAR O TEMA -->
+  <div id="area-tema">
+    <div class="theme-switch-container">
+      <button id="sun-btn" class="theme-button sun" title="Tema Claro"><i class="fas fa-sun"></i></button>
+      <button id="moon-btn" class="theme-button moon" title="Tema Escuro"><i class="fas fa-moon"></i></button>
+      <button id="contrast-btn" class="theme-button contrast" title="Alto Contraste"><i class="fas fa-adjust"></i></button>
     </div>
-
-    <!-- DETALHES DAS SKILLS -->
-    <div class="skill-details">
+    <!-- SERVIÇOS -->
+    <section class="skills" id="servicos">
+      <h2 style="text-align:center;margin-bottom:30px;">Serviços</h2>
       <div class="grid">
-        <div class="skill-detail" id="detail-web" data-skill="Desenvolvimento de Sites">
+        <div class="skill-box" data-target="detail-web">
+          <i class="fas fa-laptop-code"></i>
           <h3>Desenvolvimento de Sites</h3>
-          <div class="skill-media">Carregando conteúdo...</div>
+          <p>HTML5, CSS3, JavaScript, Netlify, APIs.</p>
         </div>
-        <div class="skill-detail" id="detail-data" data-skill="Análise de Dados">
+        <div class="skill-box" data-target="detail-data">
+          <i class="fas fa-database"></i>
           <h3>Análise de Dados</h3>
-          <div class="skill-media">Carregando conteúdo...</div>
+          <p>Python, SQL, Power BI, Excel.</p>
         </div>
-        <div class="skill-detail" id="detail-auto" data-skill="Automação & Scripting">
+        <div class="skill-box" data-target="detail-auto">
+          <i class="fas fa-cogs"></i>
           <h3>Automação & Scripting</h3>
-          <div class="skill-media">Carregando conteúdo...</div>
+          <p>Google Apps Script, Selenium, PyAutoGUI.</p>
         </div>
-        <div class="skill-detail" id="detail-suporte" data-skill="Suporte de Sistemas">
+        <div class="skill-box" data-target="detail-suporte">
+          <i class="fas fa-tools"></i>
           <h3>Suporte de Sistemas</h3>
-          <div class="skill-media">Carregando conteúdo...</div>
+          <p>Windows, Office, TeamViewer/ AnyDesk, Git, GitHub</p>
         </div>
       </div>
-    </div>
+
+      <!-- DETALHES DAS SKILLS -->
+      <div class="skill-details">
+        <div class="grid">
+          <div class="skill-detail" id="detail-web" data-skill="Desenvolvimento de Sites">
+            <h3>Desenvolvimento de Sites</h3>
+            <div class="skill-media">Carregando conteúdo...</div>
+          </div>
+          <div class="skill-detail" id="detail-data" data-skill="Análise de Dados">
+            <h3>Análise de Dados</h3>
+            <div class="skill-media">Carregando conteúdo...</div>
+          </div>
+          <div class="skill-detail" id="detail-auto" data-skill="Automação & Scripting">
+            <h3>Automação & Scripting</h3>
+            <div class="skill-media">Carregando conteúdo...</div>
+          </div>
+          <div class="skill-detail" id="detail-suporte" data-skill="Suporte de Sistemas">
+            <h3>Suporte de Sistemas</h3>
+            <div class="skill-media">Carregando conteúdo...</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+   <!-- SOBRE -->
+  <section id="sobre">
+    <h2 style="text-align:center;margin-bottom:20px;">Sobre Mim</h2>
+
+    <p>
+      <strong>Resumo:</strong> Especialista em otimização de processos administrativos, logística, compras e garantia de qualidade. Combino sólida experiência em análise de dados e Desenvolvimento de Sites, unindo expertise em automação e SQL a uma visão estratégica para impulsionar produtividade, reduzir custos e fortalecer a reputação organizacional.
+    </p>
+
+    <h3>* Experiência</h3>
+      <ul>
+      <li>Rotinas fiscais: Emissão de notas, faturamento e conciliação diária de vendas, garantindo 100% de conformidade com prazos legais e auditorias internas.</li>
+      <li>Desenvolvi dashboards em Excel e Power BI, acelerando a geração de relatórios de entrada/saída em 40% e apoiando decisões estratégicas da diretoria.</li>
+    </ul>
+
+    <h4>Garantia de Qualidade</h4>
+    <ul>
+      <li>Conduzi análises de não-conformidades e testes de produto que reduziram devoluções em 25%, preservando a imagem da marca e aumentando a satisfação de clientes.</li>
+      <li>Estabeleci indicadores-chave de desempenho (KPIs) para monitorar a conformidade de processos, resultando em melhoria contínua e certificações de qualidade internas.</li>
+    </ul>
+
+    <h3>* Habilidades Técnicas</h3>
+    <ul>
+      <li><strong>Automação &amp; Scripting:</strong> Desenvolvimento de scripts em Python e macros em VBA para automatizar tarefas repetitivas, economizando até 120 horas por mês.</li>
+      <li><strong>SQL &amp; Análise de Dados:</strong> Consultas avançadas para ETL de dados; criação de relatórios personalizados que orientaram iniciativas de redução de custos.</li>
+      <li><strong>Desenvolvimento de Sites:</strong> Integração com Google API e APIs para e-commerce, implementando catálogo dinâmico e cálculo automático de frete.</li>
+      <li><strong>Suporte Técnico:</strong> Configuração e manutenção de hardware (estações de trabalho, balanças industriais, dispositivos MIT) e gerenciamento de servidores de preços.</li>
+    </ul>
+
+    <h3>* Diferenciais</h3>
+    <ul>
+      <li><strong>Visão Analítica:</strong> Capacidade de cruzar dados operacionais e financeiros para otimizar processos e identificar oportunidades de economia.</li>
+      <li><strong>Foco em Resultados:</strong> Histórico de entregas objetivas com indicadores claros de sucesso e retorno sobre investimento.</li>
+      <li><strong>Adaptabilidade:</strong> Experiência em varejo, indústria e serviços, liderando projetos multidisciplinares em ambientes dinâmicos.</li>
+    </ul>
+
+    <p>
+      <strong>* Disponível para desafios que exijam eficiência operacional, visão estratégica e orientação a resultados.</strong>
+    </p>
   </section>
 
- <!-- SOBRE -->
-<section id="sobre">
-  <h2 style="text-align:center;margin-bottom:20px;">Sobre Mim</h2>
+    <!-- ORÇAMENTOS -->
+  <section id="orcamentos">
+    <h2 style="text-align:center;margin-bottom:20px;">Solicite um Orçamento!</h2>
+    <form name="orcamento-form" id="orcamento-form">
+      <input type="text" name="cliente" id="cliente" placeholder="Nome completo" required maxlength="100">
+      <div class="error-message" id="cliente-error"></div>
+      
+      <input type="email" name="email" id="email" placeholder="E-mail" required maxlength="100">
+      <div class="error-message" id="email-error"></div>
+      
+      <input type="tel" name="telefone" id="telefone" placeholder="Celular (opcional)" maxlength="15">
+      <div class="error-message" id="telefone-error"></div>
+      
+      <select name="servico" id="servico" required>
+        <option value="">– Selecione o serviço –</option>
+        <option value="Desenvolvimento de Sites">Desenvolvimento de Sites</option>
+        <option value="Análise de Dados">Análise de Dados</option>
+        <option value="Automação & Scripting">Automação & Scripting</option>
+        <option value="Suporte de Sistemas">Suporte de Sistemas</option>
+      </select>
+      <div class="error-message" id="servico-error"></div>
+      
+      <textarea name="descricao" id="descricao" rows="4" placeholder="Descreva seu projeto" required maxlength="1000"></textarea>
+      <div class="error-message" id="descricao-error"></div>
+      
+      <button type="submit" id="submit-btn">Enviar Solicitação</button>
+      <div class="rate-limit-message" id="rate-limit-msg">⚠️ Aguarde 60 segundos antes de enviar outra solicitação. Tempo restante: <span id="countdown"></span>s</div>
+      <div class="success-message" id="success-msg">✅ Solicitação enviada com sucesso!</div>
+    </form>
+  </section>
 
-  <p>
-    <strong>Resumo:</strong> Especialista em otimização de processos administrativos, logística, compras e garantia de qualidade. Combino sólida experiência em análise de dados e Desenvolvimento de Sites, unindo expertise em automação e SQL a uma visão estratégica para impulsionar produtividade, reduzir custos e fortalecer a reputação organizacional.
-  </p>
+    <!-- FOOTER -->
+    <footer>
+      <div class="copyright">
+        <a href="https://www.instagram.com/web.devanalytics/" target="_blank" rel="noopener">
+          <img src="https://i.imgur.com/nE7bFpV.jpeg" alt="Instagram WebDevAnalytics" style="max-width:120px;margin:0 10px;display:inline-block;vertical-align:middle;"/>
+        </a>
+      </div>
+      <p>© 2025 WebDevAnalytics. Todos os direitos reservados.</p>
+    </footer>
+  </div>
 
-  <h3>* Experiência</h3>
-    <ul>
-    <li>Rotinas fiscais: Emissão de notas, faturamento e conciliação diária de vendas, garantindo 100% de conformidade com prazos legais e auditorias internas.</li>
-    <li>Desenvolvi dashboards em Excel e Power BI, acelerando a geração de relatórios de entrada/saída em 40% e apoiando decisões estratégicas da diretoria.</li>
-  </ul>
-
-  <h4>Garantia de Qualidade</h4>
-  <ul>
-    <li>Conduzi análises de não-conformidades e testes de produto que reduziram devoluções em 25%, preservando a imagem da marca e aumentando a satisfação de clientes.</li>
-    <li>Estabeleci indicadores-chave de desempenho (KPIs) para monitorar a conformidade de processos, resultando em melhoria contínua e certificações de qualidade internas.</li>
-  </ul>
-
-  <h3>* Habilidades Técnicas</h3>
-  <ul>
-    <li><strong>Automação &amp; Scripting:</strong> Desenvolvimento de scripts em Python e macros em VBA para automatizar tarefas repetitivas, economizando até 120 horas por mês.</li>
-    <li><strong>SQL &amp; Análise de Dados:</strong> Consultas avançadas para ETL de dados; criação de relatórios personalizados que orientaram iniciativas de redução de custos.</li>
-    <li><strong>Desenvolvimento de Sites:</strong> Integração com Google API e APIs para e-commerce, implementando catálogo dinâmico e cálculo automático de frete.</li>
-    <li><strong>Suporte Técnico:</strong> Configuração e manutenção de hardware (estações de trabalho, balanças industriais, dispositivos MIT) e gerenciamento de servidores de preços.</li>
-  </ul>
-
-  <h3>* Diferenciais</h3>
-  <ul>
-    <li><strong>Visão Analítica:</strong> Capacidade de cruzar dados operacionais e financeiros para otimizar processos e identificar oportunidades de economia.</li>
-    <li><strong>Foco em Resultados:</strong> Histórico de entregas objetivas com indicadores claros de sucesso e retorno sobre investimento.</li>
-    <li><strong>Adaptabilidade:</strong> Experiência em varejo, indústria e serviços, liderando projetos multidisciplinares em ambientes dinâmicos.</li>
-  </ul>
-
-  <p>
-    <strong>* Disponível para desafios que exijam eficiência operacional, visão estratégica e orientação a resultados.</strong>
-  </p>
-</section>
-
-  <!-- ORÇAMENTOS -->
-<section id="orcamentos">
-  <h2 style="text-align:center;margin-bottom:20px;">Solicite um Orçamento!</h2>
-  <form name="orcamento-form" id="orcamento-form">
-    <input type="text" name="cliente" id="cliente" placeholder="Nome completo" required maxlength="100">
-    <div class="error-message" id="cliente-error"></div>
-    
-    <input type="email" name="email" id="email" placeholder="E-mail" required maxlength="100">
-    <div class="error-message" id="email-error"></div>
-    
-    <input type="tel" name="telefone" id="telefone" placeholder="Celular (opcional)" maxlength="15">
-    <div class="error-message" id="telefone-error"></div>
-    
-    <select name="servico" id="servico" required>
-      <option value="">– Selecione o serviço –</option>
-      <option value="Desenvolvimento de Sites">Desenvolvimento de Sites</option>
-      <option value="Análise de Dados">Análise de Dados</option>
-      <option value="Automação & Scripting">Automação & Scripting</option>
-      <option value="Suporte de Sistemas">Suporte de Sistemas</option>
-    </select>
-    <div class="error-message" id="servico-error"></div>
-    
-    <textarea name="descricao" id="descricao" rows="4" placeholder="Descreva seu projeto" required maxlength="1000"></textarea>
-    <div class="error-message" id="descricao-error"></div>
-    
-    <button type="submit" id="submit-btn">Enviar Solicitação</button>
-    <div class="rate-limit-message" id="rate-limit-msg">⚠️ Aguarde 60 segundos antes de enviar outra solicitação. Tempo restante: <span id="countdown"></span>s</div>
-    <div class="success-message" id="success-msg">✅ Solicitação enviada com sucesso!</div>
-  </form>
-</section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="copyright">
-      <a href="https://www.instagram.com/web.devanalytics/" target="_blank" rel="noopener">
-        <img src="https://i.imgur.com/nE7bFpV.jpeg" alt="Instagram WebDevAnalytics" style="max-width:120px;margin:0 10px;display:inline-block;vertical-align:middle;"/>
-      </a>
-    </div>
-    <p>© 2025 WebDevAnalytics. Todos os direitos reservados.</p>
-  </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const area = document.getElementById('area-tema');
+      const btns = {
+        'sun-btn': 'tema-claro',
+        'moon-btn': 'tema-escuro',
+        'contrast-btn': 'tema-alto-contraste'
+      };
+      // Set initial
+      document.getElementById('sun-btn').classList.add('active');
+      area.classList.add('tema-claro');
+      // Add listeners
+      Object.keys(btns).forEach(id => {
+        const el = document.getElementById(id);
+        el.addEventListener('click', () => {
+          // Remove all theme classes and active states
+          Object.values(btns).forEach(cls => area.classList.remove(cls));
+          Object.keys(btns).forEach(i => document.getElementById(i).classList.remove('active'));
+          // Add selected
+          area.classList.add(btns[id]);
+          el.classList.add('active');
+        });
+      });
+    });
+    </script>
 
   <script>
     // Rate limiting melhorado
@@ -714,6 +801,22 @@
       e.preventDefault();
     }
   });
+
+</script>
+
+<script>
+  // Toggle Tema
+const area = document.getElementById('area-tema');
+const toggle = document.getElementById('theme-toggle-checkbox');
+area.classList.add('tema-claro');
+toggle.checked = false;
+toggle.addEventListener('change', function() {
+  if (this.checked) {
+    area.classList.replace('tema-claro','tema-escuro');
+  } else {
+    area.classList.replace('tema-escuro','tema-claro');
+  }
+});
 </script>
 </body>
 </html>
