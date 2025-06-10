@@ -320,6 +320,18 @@
     @media (max-width: 600px) {
       .banner-static { font-size: 1.3rem; }
     }
+
+    @media (max-width: 600px) {
+      .theme-switch-container {
+        position: static !important;
+        display: flex;
+        justify-content: center;
+        margin: 0.5rem 0 0.5rem 0;
+        top: auto;
+        right: auto;
+        z-index: auto;
+      }
+    }
   </style>
 
   <style>
@@ -337,6 +349,11 @@
   <!-- HERO -->
   <header id="home">
     <h1>WebDevAnalytics</h1>
+    <div class="theme-switch-container">
+      <button id="sun-btn" class="theme-button sun" title="Tema Claro"><i class="fas fa-sun"></i></button>
+      <button id="moon-btn" class="theme-button moon" title="Tema Escuro"><i class="fas fa-moon"></i></button>
+      <button id="contrast-btn" class="theme-button contrast" title="Alto Contraste"><i class="fas fa-adjust"></i></button>
+    </div>
     <p>Transformando dados em soluções inteligentes.</p>
     <a href="#orcamentos" class="button">Solicitar Orçamento</a>
     <br>
@@ -358,12 +375,6 @@
 
   <!-- INÍCIO DA ÁREA QUE DEVE MUDAR O TEMA -->
   <div id="area-tema">
-    <div class="theme-switch-container">
-      <button id="sun-btn" class="theme-button sun" title="Tema Claro"><i class="fas fa-sun"></i></button>
-      <button id="moon-btn" class="theme-button moon" title="Tema Escuro"><i class="fas fa-moon"></i></button>
-      <button id="contrast-btn" class="theme-button contrast" title="Alto Contraste"><i class="fas fa-adjust"></i></button>
-    </div>
-
     <!-- BANNER ANIMADO -->
     <section class="hero-banner">
       <div class="banner-content">
