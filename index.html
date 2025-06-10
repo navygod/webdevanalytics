@@ -41,7 +41,7 @@
   font-size: 1.2rem;
   padding: 8px;
   border-radius: 50%;
-  transition: background 0.3s, color 0.3s;
+  transition: background 0.5s, color 0.5s;
 }
 .theme-button.active {
   background: var(--accent);
@@ -264,6 +264,62 @@
       transition: background 0.3s, color 0.3s;
       min-height: 100vh; /* Garante que o fundo cubra toda a área */
     }
+
+    .banner-animated {
+      position: relative;
+      height: 9.5em; /* ajuste conforme o tamanho do texto */
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      margin-left: 10px;
+    }
+    .banner-text {
+      position: absolute;
+      left: 0;
+      top: 0;
+      opacity: 0;
+      transition: opacity 0.5s;
+      width: 100%;
+      font-size: 3.5rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #072187, #a084ee, #393992, #81d4ef);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+    }
+    .banner-text.active {
+      opacity: 1;
+      position: relative;
+    }
+    @media (max-width: 600px) {
+      .banner-text { font-size: 1.3rem; }
+    }
+
+    .banner-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .banner-static {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(90deg, #040758, #823fac, #5454bd, #81d4ef);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-fill-color: transparent;
+      text-align: center;
+      filter: drop-shadow(0 0 10px rgba(129, 212, 239, 0.2));
+    }
+    @media (max-width: 600px) {
+      .banner-static { font-size: 1.3rem; }
+    }
   </style>
 
   <style>
@@ -290,8 +346,6 @@
         <a href="https://github.com/navygod" target="_blank" rel="noopener noreferrer" class="social-btn github" title="GitHub">
           <img src="https://i.imgur.com/PmuA4yM.png" alt="GitHub">
         </a>
-        <!--<a href="https://www.linkedin.com/in/tiago-correa-b026391b7/" target="_blank" rel="noopener noreferrer" class="social-btn linkedin" title="LinkedIn" -->
-          <!--<img src="https://i.imgur.com/ojKjPft.png" alt="LinkedIn">-->
         <a href="https://www.instagram.com/web.devanalytics/" target="_blank" rel="noopener noreferrer" class="social-btn instagram" title="Instagram">
         <img src="https://i.imgur.com/hcaMlqY.jpeg" alt="Instagram">
         </a>
@@ -309,6 +363,25 @@
       <button id="moon-btn" class="theme-button moon" title="Tema Escuro"><i class="fas fa-moon"></i></button>
       <button id="contrast-btn" class="theme-button contrast" title="Alto Contraste"><i class="fas fa-adjust"></i></button>
     </div>
+
+    <!-- BANNER ANIMADO -->
+    <section class="hero-banner">
+      <div class="banner-content">
+        <h2 class="banner-static">Transformando...</h2>
+        <div class="banner-animated">
+          <span class="banner-text active">Dados em soluções inteligentes.</span>
+          <span class="banner-text">Custos em valor agregado.</span>
+          <span class="banner-text">Números em decisões certeiras.</span>
+          <span class="banner-text">Tecnologia em diferenciais de mercado.</span>
+          <span class="banner-text">Desafios em oportunidades estratégicas.</span>
+          <span class="banner-text">Complexidade em simplicidade eficiente.</span>
+          <span class="banner-text">Ideias em realidade digital.</span>
+          <span class="banner-text">Problemas em vantagens competitivas.</span>
+          <span class="banner-text">Necessidades em soluções inovadoras.</span>
+        </div>
+      </div>
+    </section>
+    
     <!-- SERVIÇOS -->
     <section class="skills" id="servicos">
       <h2 style="text-align:center;margin-bottom:30px;">Serviços</h2>
@@ -448,9 +521,9 @@
         'moon-btn': 'tema-escuro',
         'contrast-btn': 'tema-alto-contraste'
       };
-      // Set initial
-      document.getElementById('sun-btn').classList.add('active');
-      area.classList.add('tema-claro');
+      // Set initial (tema escuro por padrão)
+      document.getElementById('moon-btn').classList.add('active');
+      area.classList.add('tema-escuro');
       // Add listeners
       Object.keys(btns).forEach(id => {
         const el = document.getElementById(id);
@@ -816,6 +889,18 @@ toggle.addEventListener('change', function() {
   } else {
     area.classList.replace('tema-escuro','tema-claro');
   }
+});
+</script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const texts = document.querySelectorAll('.banner-animated .banner-text');
+  let idx = 0;
+  setInterval(() => {
+    texts[idx].classList.remove('active');
+    idx = (idx + 1) % texts.length;
+    texts[idx].classList.add('active');
+  }, 3000); // Troca a cada 3 segundos
 });
 </script>
 </body>
