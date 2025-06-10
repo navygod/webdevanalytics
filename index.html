@@ -278,7 +278,7 @@
       left: 0;
       top: 0;
       opacity: 0;
-      transition: opacity 0.5s;
+      transition: opacity 0.7s, transform 0.7s;
       width: 100%;
       font-size: 3.5rem;
       font-weight: bold;
@@ -287,10 +287,25 @@
       -webkit-text-fill-color: transparent;
       background-clip: text;
       text-fill-color: transparent;
+      transform: translateY(20px);
     }
     .banner-text.active {
       opacity: 1;
       position: relative;
+      transform: translateY(0);
+      z-index: 1;
+    }
+    .banner-text.fade-out {
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: opacity 0.7s, transform 0.7s;
+      z-index: 0;
+    }
+    .banner-text.fade-in {
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.7s, transform 0.7s;
+      z-index: 1;
     }
     @media (max-width: 600px) {
       .banner-text { font-size: 1.3rem; }
@@ -908,10 +923,24 @@ document.addEventListener('DOMContentLoaded', function() {
   const texts = document.querySelectorAll('.banner-animated .banner-text');
   let idx = 0;
   setInterval(() => {
-    texts[idx].classList.remove('active');
-    idx = (idx + 1) % texts.length;
-    texts[idx].classList.add('active');
-  }, 3000); // Troca a cada 3 segundos
+    // Remove active e adiciona fade-out na frase atual
+    texts[idx].classList.remove('active', 'fade-in');
+    texts[idx].classList.add('fade-out');
+    // Próximo índice
+    const nextIdx = (idx + 1) % texts.length;
+    // Após a transição de fade-out, troca para a próxima frase
+    setTimeout(() => {
+      texts[idx].classList.remove('fade-out');
+      // Ativa a próxima frase com fade-in
+      texts[nextIdx].classList.add('fade-in');
+      // Pequeno delay para garantir o efeito
+      setTimeout(() => {
+        texts[nextIdx].classList.add('active');
+        texts[nextIdx].classList.remove('fade-in');
+      }, 50);
+      idx = nextIdx;
+    }, 650); // Tempo deve ser igual ao transition do CSS
+  }, 5000);
 });
 </script>
 </body>
